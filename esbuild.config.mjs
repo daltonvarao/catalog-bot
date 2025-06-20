@@ -1,31 +1,38 @@
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import { build } from "esbuild";
 
-dotenv.config();
+config();
 
 const isProd = process.env.NODE_ENV === "production";
 
 build({
-  entryPoints: ["src/bot.ts"],
+  entryPoints: ["./src/app.ts"],
   bundle: true,
   platform: "node",
   target: "node18",
-  outfile: "dist/bot.js",
-  minify: isProd,
+  outfile: "./dist/app.js",
   sourcemap: !isProd,
+  minify: isProd,
   external: [
-    "bullmq",
     "ioredis",
-    "express",
+    "bullmq",
+    "@grammyjs/conversations",
     "@grammyjs/menu",
     "grammy",
-    "@bull-board/express",
     "@bull-board/api",
+    "@bull-board/express",
+    "express",
     "dotenv",
   ],
-  define: {
-    "process.env.NODE_ENV": JSON.stringify(
-      process.env.NODE_ENV || "development"
-    ),
-  },
-}).catch(() => process.exit(1));
+})
+  .then(() => {
+    console.log(
+      `⚡ Build completed successfully in ${
+        isProd ? "production" : "development"
+      } mode`
+    );
+  })
+  .catch((err) => {
+    console.error("❌ Build failed:", err);
+    process.exit(1);
+  });
