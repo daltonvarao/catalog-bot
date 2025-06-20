@@ -81,7 +81,8 @@ bot.use(conversations());
 bot.use(
   ...Object.keys(conversationList).map((k) =>
     createConversation(
-      conversationList[k as keyof typeof conversationList].conversation
+      conversationList[k as keyof typeof conversationList].conversation,
+      conversationList[k as keyof typeof conversationList].name
     )
   )
 );
