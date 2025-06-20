@@ -7,8 +7,6 @@ import {
 import { Menu } from "@grammyjs/menu";
 import { Bot, Context } from "grammy";
 import { config } from "./config";
-import { queue } from "./queues";
-import { QueuesConfig } from "./queues.config";
 
 export const bot = new Bot<ConversationFlavor<Context>>(config.telegram.token);
 
@@ -119,9 +117,9 @@ bot.on("message:photo", async (ctx) => {
   // const path = file.file_path; // file path on Bot API server
   // await ctx.reply("Download your own file again: " + path);
 
-  await queue.add(QueuesConfig.processPhotos, {
-    file,
-    caption: ctx.message.caption || "",
-  });
+  // await queue.add(QueuesConfig.processPhotos, {
+  //   file,
+  //   caption: ctx.message.caption || "",
+  // });
   await ctx.reply("Your photo is being processed. Please wait...");
 });
