@@ -9,6 +9,8 @@ import { Bot, Context } from "grammy";
 import { CatalogService } from "./catalogs/catalog.service";
 import { config } from "./config";
 import { Exception } from "./exceptions/base.exceptions";
+import { queue } from "./queues";
+import { QueuesConfig } from "./queues.config";
 
 export const bot = new Bot<ConversationFlavor<Context>>(config.telegram.token);
 
@@ -152,6 +154,14 @@ bot.command("help", (ctx) => {
   ctx.reply("Send me a photo and I'll process it. Use /start to begin.");
 });
 
+bot.command("fila", async (ctx) => {
+  await queue.add(QueuesConfig.processPhotos, {
+    chatId: ctx.chatId,
+    messageId: ctx.message?.message_id,
+    ok: true,
+  });
+});
+
 // bot.command("lista_catalogos", (ctx) => {
 //   if (catalogs.length === 0) {
 //     ctx.reply("Nenhum catalogo encontrado.");
@@ -167,6 +177,7 @@ bot.command("help", (ctx) => {
 export const commands = [
   { command: "menu", description: "Open the bot menu" },
   { command: "help", description: "Show help text" },
+  { command: "fila", description: "Show help text" },
 ];
 
 // bot.on("message:photo", async (ctx) => {
